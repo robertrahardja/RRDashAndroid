@@ -1,2 +1,2 @@
 # RRDashAndroid
-initial commit
+Android end for the RRDash project. 
