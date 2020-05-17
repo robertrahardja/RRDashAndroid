@@ -1,0 +1,2 @@
+rootProject.name='RRDashAndroid'
+include ':app'
