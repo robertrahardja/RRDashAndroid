@@ -1,17 +1,16 @@
 package com.example.rrdashandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.google.android.gms.maps.SupportMapFragment;
 
 
 /**
@@ -59,7 +58,14 @@ public class TrayFragment extends Fragment {
                             }
         );
 
-
+        Button buttonAddPayment = (Button) getActivity().findViewById(R.id.button_add_payment);
+        buttonAddPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), PaymentActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }
