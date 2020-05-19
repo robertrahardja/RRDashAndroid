@@ -1,9 +1,11 @@
 package com.example.rrdashandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -54,9 +56,15 @@ public class RestaurantListFragment extends Fragment {
                                               return LayoutInflater.from(getActivity()).inflate(R.layout.list_item_restaurant, null);
                                           }
                                       }
-
         );
 
+        restaurantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), MealListActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }
