@@ -51,19 +51,17 @@ public class DriverMainActivity extends AppCompatActivity {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                         if (id == R.id.nav_orders) {
-//                            transaction.replace(R.id.content_frame, new RestaurantListFragment()).commit();
+                            transaction.replace(R.id.content_frame, new OrderListFragment()).commit();
                         } else if (id == R.id.nav_delivery) {
-//                            transaction.replace(R.id.content_frame, new TrayFragment()).commit();
                         } else if (id == R.id.nav_statistic) {
-//                            transaction.replace(R.id.content_frame, new OrderFragment()).commit();
                         } else if (id == R.id.nav_logout) {
                         }
 
                         return true;
                     }
                 });
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.content_frame, new RestaurantListFragment()).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, new OrderListFragment()).commit();
     }
 
     @Override
