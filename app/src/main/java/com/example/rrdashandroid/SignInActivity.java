@@ -3,15 +3,24 @@ package com.example.rrdashandroid;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+
+import java.util.Arrays;
+
 public class SignInActivity extends AppCompatActivity {
 
     Button customerButton, driverButton;
-
+    CallbackManager callbackManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +55,48 @@ public class SignInActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
+
+                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("public_profile", "email"));
+
                 ColorDrawable customerButtonColor = (ColorDrawable) customerButton.getBackground();
 
-                if (customerButtonColor.getColor() == getResources().getColor(R.color.colorAccent)){
-                    Intent intent = new Intent(getApplicationContext(), CustomerMainActivity.class);
-                    startActivity(intent);
-                }else {
-                    Intent intent = new Intent(getApplicationContext(), DriverMainActivity.class);
-                    startActivity(intent);
-                }
+//                if (customerButtonColor.getColor() == getResources().getColor(R.color.colorAccent)){
+//                    Intent intent = new Intent(getApplicationContext(), CustomerMainActivity.class);
+//                    startActivity(intent);
+//                }else {
+//                    Intent intent = new Intent(getApplicationContext(), DriverMainActivity.class);
+//                    startActivity(intent);
+//                }
 
             }
         });
+
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        Log.d("Facebook Token", loginResult.getAccessToken().getToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
