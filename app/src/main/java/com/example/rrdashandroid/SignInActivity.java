@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -139,7 +140,12 @@ public class SignInActivity extends AppCompatActivity {
                     }
 
                 });
-            if (AccessToken.getCurrentAccessToken() != null) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        if (AccessToken.getCurrentAccessToken() != null) {
                 Log.d("USER", sharedPref.getAll().toString());
                 buttonLogin.setText("Continue as " + sharedPref.getString("email", ""));
             }else {
