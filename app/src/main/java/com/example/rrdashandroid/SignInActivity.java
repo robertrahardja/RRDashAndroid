@@ -66,9 +66,14 @@ public class SignInActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-
-                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("public_profile", "email"));
-
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if (AccessToken.getCurrentAccessToken() == null) {
+                    LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("public_profile", "email"));
+                }
                 ColorDrawable customerButtonColor = (ColorDrawable) customerButton.getBackground();
 
 //                if (customerButtonColor.getColor() == getResources().getColor(R.color.colorAccent)){
@@ -84,7 +89,14 @@ public class SignInActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
         sharedPref= getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        final Button buttonLogout = (Button)findViewById(R.id.button_logout);
+        buttonLogout.setVisibility(View.GONE);
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -148,10 +160,20 @@ public class SignInActivity extends AppCompatActivity {
         if (AccessToken.getCurrentAccessToken() != null) {
                 Log.d("USER", sharedPref.getAll().toString());
                 buttonLogin.setText("Continue as " + sharedPref.getString("email", ""));
+                buttonLogout.setVisibility(View.VISIBLE);
             }else {
                 Log.d("at", "failed");
             }
 
+
+        buttonLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginManager.getInstance().logOut();
+                buttonLogin.setText("Login with Facebook");
+                buttonLogout.setVisibility(View.GONE);
+            }
+        });
     }
 
 
