@@ -1,7 +1,12 @@
 package com.example.rrdashandroid;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 public class DriverMainActivity extends AppCompatActivity {
 
@@ -64,6 +70,16 @@ public class DriverMainActivity extends AppCompatActivity {
                 });
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, new OrderListFragment()).commit();
+
+        // Get the User's info
+        SharedPreferences sharedPref = getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
+
+        View header = navigationView.getHeaderView(0);
+        ImageView customer_avatar = (ImageView) header.findViewById(R.id.customer_avatar);
+        TextView customer_name = (TextView) header.findViewById(R.id.customer_name);
+
+        customer_name.setText(sharedPref.getString("name", ""));
+        Picasso.with(this).load(sharedPref.getString("avatar", "")).transform(new CircleTransform()).into(customer_avatar);
     }
 
     @Override
