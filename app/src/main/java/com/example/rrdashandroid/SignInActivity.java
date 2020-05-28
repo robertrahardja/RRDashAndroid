@@ -89,11 +89,11 @@ public class SignInActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
         sharedPref= getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            TimeUnit.SECONDS.sleep(1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         final Button buttonLogout = (Button)findViewById(R.id.button_logout);
         buttonLogout.setVisibility(View.GONE);
