@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +17,18 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerMainActivity extends AppCompatActivity {
 
@@ -25,6 +36,7 @@ public class CustomerMainActivity extends AppCompatActivity {
 //    setSupportActionBar(toolbar);
 
     private DrawerLayout mDrawerLayout;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +76,11 @@ public class CustomerMainActivity extends AppCompatActivity {
                         } else if (id == R.id.nav_order) {
                             transaction.replace(R.id.content_frame, new OrderFragment()).commit();
                         } else if (id == R.id.nav_logout) {
+                            logoutToServer(sharedPref.getString("token",""));
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.remove("token");
+                            editor.apply();
+
                             finishAffinity();
                             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                             startActivity(intent);
@@ -76,7 +93,7 @@ public class CustomerMainActivity extends AppCompatActivity {
         transaction.replace(R.id.content_frame, new RestaurantListFragment()).commit();
 
         // Get the User's info
-        SharedPreferences sharedPref = getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
 
         View header = navigationView.getHeaderView(0);
         ImageView customer_avatar = (ImageView) header.findViewById(R.id.customer_avatar);
@@ -102,4 +119,44 @@ public class CustomerMainActivity extends AppCompatActivity {
     public void onBackPressed() {
 
     }
+
+    private void logoutToServer(final String token){
+
+        String url = "http://192.168.1.108:8000/api/social/revoke-token";
+
+
+        StringRequest postRequest = new StringRequest
+                (Request.Method.POST, url, new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("RESPONSE FROM SERVER", response.toString());
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("token", token);
+                params.put("client_id", "kIEymUtdIlunTBnKk1RhXcrffAzJc6zf69c2YziD");
+                params.put("client_secret", "U4OuZ2v0v4gxWTdwTYfTgBO65AiDoAFy19LffkSB9NKGnNaMhmIsfFLmGvRlmHeuYXOKiJbCv4v7g52kBl0zlenqdeQo5No7bQN42kMfuLDWshpKxcrmGlLMZfN7IvYR" );
+
+                return params;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(postRequest);
+
+    }
 }
+
+
