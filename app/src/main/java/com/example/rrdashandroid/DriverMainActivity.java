@@ -1,6 +1,7 @@
 package com.example.rrdashandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -63,7 +64,11 @@ public class DriverMainActivity extends AppCompatActivity {
                         } else if (id == R.id.nav_statistic) {
                             transaction.replace(R.id.content_frame, new StatisticFragment()).commit();
                         } else if (id == R.id.nav_logout) {
+                            finishAffinity();
+                            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                            startActivity(intent);
                         }
+
 
                         return true;
                     }
@@ -90,5 +95,10 @@ public class DriverMainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
