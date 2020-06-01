@@ -1,8 +1,10 @@
-package com.example.rrdashandroid;
+package com.example.rrdashandroid.Activities;
+
+import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.example.rrdashandroid.R;
 
 public class PaymentActivity extends AppCompatActivity {
 

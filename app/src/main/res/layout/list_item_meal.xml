@@ -7,7 +7,7 @@
     android:padding="15dp">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/meal_image"
         android:layout_width="110dp"
         android:layout_height="110dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +16,7 @@
         app:srcCompat="@drawable/blank_image" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/meal_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Burger King"
@@ -25,24 +25,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/meal_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:text="This is a great burger"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/meal_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/meal_name" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/meal_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="$12.00"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/meal_desc" />
 </androidx.constraintlayout.widget.ConstraintLayout>

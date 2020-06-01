@@ -1,4 +1,4 @@
-package com.example.rrdashandroid;
+package com.example.rrdashandroid.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,13 +24,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.rrdashandroid.Utils.CircleTransform;
+import com.example.rrdashandroid.Fragments.DeliveryFragment;
+import com.example.rrdashandroid.Fragments.OrderListFragment;
+import com.example.rrdashandroid.R;
+import com.example.rrdashandroid.Fragments.StatisticFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomerMainActivity extends AppCompatActivity {
+public class DriverMainActivity extends AppCompatActivity {
 
 //    Toolbar toolbar = findViewById(R.id.toolbar);
 //    setSupportActionBar(toolbar);
@@ -41,7 +46,7 @@ public class CustomerMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_main);
+        setContentView(R.layout.activity_driver_main);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -52,7 +57,7 @@ public class CustomerMainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout_driver);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -69,12 +74,12 @@ public class CustomerMainActivity extends AppCompatActivity {
                         int id = menuItem.getItemId();
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-                        if (id == R.id.nav_restaurant) {
-                            transaction.replace(R.id.content_frame, new RestaurantListFragment()).commit();
-                        } else if (id == R.id.nav_tray) {
-                            transaction.replace(R.id.content_frame, new TrayFragment()).commit();
-                        } else if (id == R.id.nav_order) {
-                            transaction.replace(R.id.content_frame, new OrderFragment()).commit();
+                        if (id == R.id.nav_orders) {
+                            transaction.replace(R.id.content_frame, new OrderListFragment()).commit();
+                        } else if (id == R.id.nav_delivery) {
+                            transaction.replace(R.id.content_frame, new DeliveryFragment()).commit();
+                        } else if (id == R.id.nav_statistic) {
+                            transaction.replace(R.id.content_frame, new StatisticFragment()).commit();
                         } else if (id == R.id.nav_logout) {
                             logoutToServer(sharedPref.getString("token",""));
                             SharedPreferences.Editor editor = sharedPref.edit();
@@ -86,14 +91,15 @@ public class CustomerMainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
 
+
                         return true;
                     }
                 });
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, new RestaurantListFragment()).commit();
+        transaction.replace(R.id.content_frame, new OrderListFragment()).commit();
 
         // Get the User's info
-        sharedPref = getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
+         sharedPref = getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
 
         View header = navigationView.getHeaderView(0);
         ImageView customer_avatar = (ImageView) header.findViewById(R.id.customer_avatar);
@@ -101,8 +107,6 @@ public class CustomerMainActivity extends AppCompatActivity {
 
         customer_name.setText(sharedPref.getString("name", ""));
         Picasso.with(this).load(sharedPref.getString("avatar", "")).transform(new CircleTransform()).into(customer_avatar);
-//        Picasso.with(this).load(sharedPref.getString("avatar", "")).into(customer_avatar);
-
     }
 
     @Override
@@ -122,7 +126,9 @@ public class CustomerMainActivity extends AppCompatActivity {
 
     private void logoutToServer(final String token){
 
-        String url = "http://192.168.1.108:8000/api/social/revoke-token";
+//        String url = "http://192.168.1.108:8000/api/social/revoke-token";
+
+        String url = getString(R.string.API_URL) + "/social/revoke-token";
 
 
         StringRequest postRequest = new StringRequest
@@ -146,8 +152,8 @@ public class CustomerMainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("token", token);
-                params.put("client_id", "kIEymUtdIlunTBnKk1RhXcrffAzJc6zf69c2YziD");
-                params.put("client_secret", "U4OuZ2v0v4gxWTdwTYfTgBO65AiDoAFy19LffkSB9NKGnNaMhmIsfFLmGvRlmHeuYXOKiJbCv4v7g52kBl0zlenqdeQo5No7bQN42kMfuLDWshpKxcrmGlLMZfN7IvYR" );
+                params.put("client_id", "CLIENT_ID");
+                params.put("client_secret", "CLIENT_SECRET" );
 
                 return params;
             }
@@ -158,5 +164,3 @@ public class CustomerMainActivity extends AppCompatActivity {
 
     }
 }
-
-

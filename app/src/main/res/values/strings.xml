@@ -3,6 +3,11 @@
     <string name="facebook_app_id">537266370485082</string>
     <string name="fb_login_protocol_scheme">fb537266370485082</string>
 
+    <string name="API_URL">http://192.168.1.108:8000/api</string>
+    <string name="CLIENT_ID">kIEymUtdIlunTBnKk1RhXcrffAzJc6zf69c2YziD</string>
+    <string name="CLIENT_SECRET">U4OuZ2v0v4gxWTdwTYfTgBO65AiDoAFy19LffkSB9NKGnNaMhmIsfFLmGvRlmHeuYXOKiJbCv4v7g52kBl0zlenqdeQo5No7bQN42kMfuLDWshpKxcrmGlLMZfN7IvYR</string>
+
+    <string name="title_activity_customer_main">CustomerMainActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

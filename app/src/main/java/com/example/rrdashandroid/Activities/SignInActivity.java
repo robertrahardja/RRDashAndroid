@@ -1,4 +1,4 @@
-package com.example.rrdashandroid;
+package com.example.rrdashandroid.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.rrdashandroid.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -201,13 +202,13 @@ public class SignInActivity extends AppCompatActivity {
         buttonLogin.setClickable(false);
         buttonLogin.setBackgroundColor(getResources().getColor(R.color.colorLightGray));
 
-        String url = "http://192.168.1.108:8000/api/social/convert-token";
+        String url = getString(R.string.API_URL) + "/social/convert-token";
 
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("grant_type", "convert_token");
-            jsonBody.put("client_id", "kIEymUtdIlunTBnKk1RhXcrffAzJc6zf69c2YziD");
-            jsonBody.put("client_secret", "U4OuZ2v0v4gxWTdwTYfTgBO65AiDoAFy19LffkSB9NKGnNaMhmIsfFLmGvRlmHeuYXOKiJbCv4v7g52kBl0zlenqdeQo5No7bQN42kMfuLDWshpKxcrmGlLMZfN7IvYR");
+            jsonBody.put("user_type", userType);jsonBody.put("grant_type", "convert_token");
+            jsonBody.put("client_id", getString(R.string.CLIENT_ID));
+            jsonBody.put("client_secret", getString(R.string.CLIENT_SECRET));
             jsonBody.put("backend", "facebook");
             jsonBody.put("token", facebookAccessToken);
             jsonBody.put("user_type", userType);

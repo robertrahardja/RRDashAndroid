@@ -1,4 +1,4 @@
-package com.example.rrdashandroid;
+package com.example.rrdashandroid.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.rrdashandroid.R;
 
 
 /**

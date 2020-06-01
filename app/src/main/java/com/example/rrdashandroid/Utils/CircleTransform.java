@@ -1,4 +1,4 @@
-package com.example.rrdashandroid;
+package com.example.rrdashandroid.Utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
