@@ -214,7 +214,7 @@ public class MealDetailActivity extends AppCompatActivity {
                     // Show an alert
                     AlertDialog.Builder builder = new AlertDialog.Builder((MealDetailActivity.this));
                     builder.setTitle("Start New Tray?");
-                    builder.setMessage("You're ording meal from another restaurant. Would you like to clear the current tray?");
+                    builder.setMessage("You're ordering meal from another restaurant. Would you like to clear the current tray?");
                     builder.setPositiveButton("Cancel", null);
                     builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
