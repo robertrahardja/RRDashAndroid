@@ -35,8 +35,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +47,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -56,9 +61,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private Button statusView;
 
     private GoogleMap mMap;
-//    private Timer timer = new Timer();
-//    private Marker driverMarker;
-//    private static final int DEFAULT_ZOOM = 15;
+    private Timer timer = new Timer();
+    private Marker driverMarker;
+    private static final int DEFAULT_ZOOM = 15;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -90,9 +95,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.order_map);
         mapFragment.getMapAsync(this);
-//
-//        // Get the Driver's location
-//        getDriverLocation();
+
+        // Get the Driver's location
+        getDriverLocation();
 
     }
 
@@ -179,14 +184,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                getDriverLocation();
-//            }
-//        };
-//
-//        timer.scheduleAtFixedRate(task, 0, 2000);
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                getDriverLocation();
+            }
+        };
+
+        timer.scheduleAtFixedRate(task, 0, 2000);
     }
 
     private void drawRouteOnMap(JSONObject response) {
@@ -219,4 +224,61 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
     }
+
+    private void getDriverLocation() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MY_KEY", Context.MODE_PRIVATE);
+        String url = getString(R.string.API_URL) + "/customer/driver/location/?access_token=" + sharedPref.getString("token", "");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("DRIVER LOCATION", response.toString());
+
+                        try {
+                            String[] location = response.getString("location").split(",");
+                            String lat = location[0];
+                            String lng = location[1];
+
+                            LatLng driPos = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+
+                            try {
+                                driverMarker.remove();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            driverMarker = mMap
+                                    .addMarker(new MarkerOptions()
+                                            .position(driPos)
+                                            .title("Driver Location")
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_car)));
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(jsonObjectRequest);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+    }
+
 }
