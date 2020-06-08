@@ -47,8 +47,17 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:17.2.1'
 
     // Stripe Android SDK
-    implementation 'com.stripe:stripe-android:6.1.2'
+//    implementation 'com.stripe:stripe-android:6.1.2'
+    //stripe:6.12 yielded Java compiler error: string too large to encode using UTF-8 written instead as 'STRING_TOO_LARGE' so used 8.10
+    implementation 'com.stripe:stripe-android:8.1.0'
 //    implementation 'com.stripe:stripe-android:14.4.1'
+
+//    implementation ("com.github.ar-android:DrawRouteMaps:1.0.0"){
+//        exclude group: 'com.google.android.gms'
+//    }
+    implementation ("com.github.code2080:DrawRouteMaps:1.1.0"){
+        exclude group: 'com.google.android.gms'
+    }
 
 
 // ViewModel and LiveData
@@ -72,5 +81,7 @@ dependencies {
 
 // Test helpers for Room
     testImplementation "android.arch.persistence.room:testing:1.0.0"
+
+
 
 }

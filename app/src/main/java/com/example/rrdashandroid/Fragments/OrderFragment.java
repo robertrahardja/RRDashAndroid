@@ -2,6 +2,9 @@ package com.example.rrdashandroid.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.ahmadrosid.lib.drawroutemap.DrawMarker;
+import com.ahmadrosid.lib.drawroutemap.DrawRouteMaps;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,24 +31,31 @@ import com.android.volley.toolbox.Volley;
 import com.example.rrdashandroid.Adapters.TrayAdapter;
 import com.example.rrdashandroid.Objects.Tray;
 import com.example.rrdashandroid.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private ArrayList<Tray> trayList;
     private TrayAdapter adapter;
     private Button statusView;
 
-//    private GoogleMap mMap;
+    private GoogleMap mMap;
 //    private Timer timer = new Timer();
 //    private Marker driverMarker;
 //    private static final int DEFAULT_ZOOM = 15;
@@ -75,9 +87,9 @@ public class OrderFragment extends Fragment {
         // Get The Latest Order Data
         getLatestOrder();
 
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.order_map);
-//        mapFragment.getMapAsync(this);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.order_map);
+        mapFragment.getMapAsync(this);
 //
 //        // Get the Driver's location
 //        getDriverLocation();
@@ -146,9 +158,9 @@ public class OrderFragment extends Fragment {
 
                         // Update Status View
                         statusView.setText(status);
-//
-//                        // Show Restaurant and Customer on the map
-//                        drawRouteOnMap(response);
+
+                        // Show Restaurant and Customer on the map
+                        drawRouteOnMap(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -163,4 +175,48 @@ public class OrderFragment extends Fragment {
         queue.add(jsonObjectRequest);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+//        TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                getDriverLocation();
+//            }
+//        };
+//
+//        timer.scheduleAtFixedRate(task, 0, 2000);
+    }
+
+    private void drawRouteOnMap(JSONObject response) {
+        Log.d("test", "drawRouteOnMap: in");
+        try {
+            String restaurantAddress = response.getJSONObject("order").getJSONObject("restaurant").getString("address");
+            String orderAddress = response.getJSONObject("order").getString("address");
+
+            Geocoder coder = new Geocoder(getActivity());
+            ArrayList<Address> resAddresses = (ArrayList<Address>) coder.getFromLocationName(restaurantAddress, 1);
+            ArrayList<Address> ordAddresses = (ArrayList<Address>) coder.getFromLocationName(orderAddress, 1);
+
+            if (!resAddresses.isEmpty() && !ordAddresses.isEmpty()) {
+                LatLng restaurantPos = new LatLng(resAddresses.get(0).getLatitude(), resAddresses.get(0).getLongitude());
+                LatLng orderPos = new LatLng(ordAddresses.get(0).getLatitude(), ordAddresses.get(0).getLongitude());
+
+                DrawRouteMaps draw = DrawRouteMaps.getInstance(getActivity(), getString(R.string.google_map_api_key)).draw(restaurantPos, orderPos, mMap);
+                DrawMarker.getInstance(getActivity()).draw(mMap, restaurantPos, R.drawable.pin_restaurant, "Restaurant Location");
+                DrawMarker.getInstance(getActivity()).draw(mMap, orderPos, R.drawable.pin_customer, "Customer Location");
+
+                LatLngBounds bounds = new LatLngBounds.Builder()
+                        .include(restaurantPos)
+                        .include(orderPos).build();
+                Point displaySize = new Point();
+                getActivity().getWindowManager().getDefaultDisplay().getSize(displaySize);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, displaySize.x, 250, 30));
+            }
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
